@@ -139,13 +139,13 @@ export default {
         var len = this.searchAttributeList.length;
         for(var i=0; i<len; i++){            
              var searchAttribute = this.searchAttributeList[i];
-             alert('filteredTableData: '+ data.length)
+             console.log('filteredTableData: '+ data.length)
              var searchKeyword = this.searchAttributeKeywordPairs[searchAttribute];
              console.log("from Filtered Data: filtering: => searchAttribute=>"+searchAttribute+" =>searchKeyword"+searchKeyword);
              data = data.filter(function( obj ) {  return obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
         }
          console.log("from Filtered Data: data=> "+JSON.stringify(this.tableData))
-         alert('From: filteredTableData => no of countries: => '+data.length);
+         console.log('From: filteredTableData => no of countries: => '+data.length);
         return data;
     },
     tableDataMutable: function(){
@@ -176,13 +176,13 @@ export default {
       this.$store.dispatch('updateCountriesFromData', s)
     },
     searchAttributeList: function (newValue) {
-      alert('Inside watcher*************************:'+JSON.stringify(this.searchAttributeList));
+      console.log('Inside watcher*************************:'+JSON.stringify(this.searchAttributeList));
       var s = {};
       s.result = JSON.parse(JSON.stringify(this.tableData));
       this.$store.dispatch('updateCountriesFromData', s)
     },
     searchAttributeKeywordPairs: function (newValue) {
-      alert('Inside watcher*************************: searchAttributeKeywordPairs => ');
+      console.log('Inside watcher*************************: searchAttributeKeywordPairs => ');
       //var s = {};
       //s.result = JSON.parse(JSON.stringify(this.tableData));
       //this.$store.dispatch('updateCountriesFromData', s)
@@ -275,7 +275,7 @@ export default {
       //s.result = data;
       //this.$store.dispatch('updateCountriesFromData', s)
       //this.searchCount++;
-      alert('From: closeSearchDialogSearch => searchCount => '+this.searchCount);
+      console.log('From: closeSearchDialogSearch => searchCount => '+this.searchCount);
       //this.tableDataMutable = [{name:'Pakistan',alpha2_code:'IN', alpha3_code:'IND'}];
       //console.log("hu ha ******************* =>"+JSON.stringify(this.tableDataMutable));
     },
