@@ -9,6 +9,12 @@
     <md-button class="md-icon-button" v-on:click.native="updateCountries1">
       <md-icon>refresh</md-icon>
     </md-button>
+    <md-chips v-model="searchAttributeList" :md-max="columnList.length" v-if="searchAttributeList.length>0">
+        <template scope="chip">
+            <span>{{ chip.value }}</span>
+            <small v-html="getHighlightedSearchKeyword(chip.value)"></small>
+        </template>
+    </md-chips>
     <md-button class="md-icon-button" id="searchTableButton" @click.native="openSearchDialog('searchDialog')">
       <md-icon>search</md-icon>
     </md-button>
@@ -25,8 +31,8 @@
 
     <md-table-body>
       <md-table-row v-for="(row, rowIndex) in tableDataCurrentPage" :key="rowIndex" :md-item="row" md-auto-select md-selection>
-        <md-table-cell v-for="(column, columnIndex) in row" v-html="searchKeyword.length > 0 ?(columnIndex == searchAttribute ? heiglightSearchMatch(column): column) : column" :key="columnIndex" :md-numeric="false">
-          
+        <md-table-cell v-for="(column, columnIndex) in row" v-html="heiglightSearchMatch(column,columnIndex)" :key="columnIndex" :md-numeric="false">
+          ag
         </md-table-cell>
       </md-table-row>
     </md-table-body>
@@ -50,13 +56,13 @@
     <form>
       <md-input-container>
     <label for="movie">Attribute to Search</label>
-    <md-select name="SearchAttributeSelect" id="SearchAttributeSelect" v-model="searchAttribute">
+    <md-select name="SearchAttributeSelect" id="SearchAttributeSelect">
       <md-option v-for="(row, rowIndex) in columnList" :value="row">{{row}}</md-option>
     </md-select>
   </md-input-container>
       <md-input-container>
         <label>keyword..</label>
-        <md-textarea v-model='searchKeyword'></md-textarea>
+        <md-textarea id='SearchKeywordArea'></md-textarea>
       </md-input-container>
     </form>
   </md-dialog-content>
@@ -117,15 +123,39 @@ export default {
     pageSize: 15,
     searchAttribute: '',
     searchKeyword: '',
+    searchAttributeList: [],
+    searchAttributeKeywordPairs: {},
+    searchCount: 0,
+    colorCodes: ['#f00','#0f0','#00f','#0ff','#ff0'],
   }),
   name: 'CountrySection',
   computed: {
     ...mapGetters({
       tableData: 'countries'
     }),
-    tableDataCurrentPage: function(){
-        return this.tableData.slice((this.currentPage-1)*this.pageSize,((this.currentPage-1)*this.pageSize)+this.pageSize);
+    filteredTableData: function(){
+        var data = this.tableData;
+        //var len = Object.keys(this.searchAttributeKeywordPairs).length;
+        var len = this.searchAttributeList.length;
+        for(var i=0; i<len; i++){            
+             var searchAttribute = this.searchAttributeList[i];
+             alert('filteredTableData: '+ data.length)
+             var searchKeyword = this.searchAttributeKeywordPairs[searchAttribute];
+             console.log("from Filtered Data: filtering: => searchAttribute=>"+searchAttribute+" =>searchKeyword"+searchKeyword);
+             data = data.filter(function( obj ) {  return obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
+        }
+         console.log("from Filtered Data: data=> "+JSON.stringify(this.tableData))
+         alert('From: filteredTableData => no of countries: => '+data.length);
+        return data;
     },
+    tableDataMutable: function(){
+        return this.tableData;
+    },
+    tableDataCurrentPage: function(){
+        //return this.tableDataMutable;
+        return this.filteredTableData.slice((this.currentPage-1)*this.pageSize,((this.currentPage-1)*this.pageSize)+this.pageSize);
+        //return this.tableData.slice((this.currentPage-1)*this.pageSize,((this.currentPage-1)*this.pageSize)+this.pageSize);
+    },    
     columnList: function(){
         if(this.tableData.length > 0){
             var temp = this.tableData[0];
@@ -137,6 +167,26 @@ export default {
             return temp;
         }
     }
+  },
+  watch: {
+    searchCount: function (newValue) {
+      // alert('Inside watcher*************************: searchAttributeKeywordPairs => ');
+      var s = {};
+      s.result = JSON.parse(JSON.stringify(this.tableData));
+      this.$store.dispatch('updateCountriesFromData', s)
+    },
+    searchAttributeList: function (newValue) {
+      alert('Inside watcher*************************:'+JSON.stringify(this.searchAttributeList));
+      var s = {};
+      s.result = JSON.parse(JSON.stringify(this.tableData));
+      this.$store.dispatch('updateCountriesFromData', s)
+    },
+    searchAttributeKeywordPairs: function (newValue) {
+      alert('Inside watcher*************************: searchAttributeKeywordPairs => ');
+      //var s = {};
+      //s.result = JSON.parse(JSON.stringify(this.tableData));
+      //this.$store.dispatch('updateCountriesFromData', s)
+    },
   },
   methods: {
     updateCountries1: function() {
@@ -191,11 +241,43 @@ export default {
     closeSearchDialogSearch(ref) {
       this.$refs[ref].close();
       console.log('from: closeSearchDialogSearch=> searchAttribute: '+this.searchAttribute+' =>searchKeyword'+ this.searchKeyword);
-      var s = {};
-      var searchAttribute = this.searchAttribute;
-      var searchKeyword = this.searchKeyword;
-      s.result = this.tableData.filter(function( obj ) {  return obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
-      this.$store.dispatch('updateCountriesFromData', s)
+      //var s = {};
+      //var searchAttribute = this.searchAttribute;
+      //var searchKeyword = this.searchKeyword;
+      //s.result = this.tableData.filter(function( obj ) {  return obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
+      //this.$store.dispatch('updateCountriesFromData', s)
+      
+      this.searchAttribute = document.getElementById("SearchAttributeSelect").value
+      this.searchKeyword = document.getElementById("SearchKeywordArea").value
+      if(this.searchAttributeList.indexOf(this.searchAttribute)>=0){
+        this.searchAttributeKeywordPairs[this.searchAttribute] = this.searchKeyword;
+      }
+      else{
+        this.searchAttributeList.push(this.searchAttribute);
+        this.searchAttributeKeywordPairs[this.searchAttribute] = this.searchKeyword;
+      }
+      // alert(document.getElementById("SearchKeywordArea").value);
+      console.log('from: closeSearchDialogSearch=> searchAttributeList : '+JSON.stringify(this.searchAttributeList));
+      console.log('from: closeSearchDialogSearch=> searchAttributeKeywordPairs : '+JSON.stringify(this.searchAttributeKeywordPairs));
+      //var data = this.tableData;
+      //var len = Object.keys(this.searchAttributeKeywordPairs).length;
+      //alert('closeSearchDialogSearch: '+Object.keys(this.searchAttributeKeywordPairs).length);
+      //for(var i=0; i<len; i++){
+      //    alert('closeSearchDialogSearch: '+JSON.stringify(this.searchAttributeKeywordPairs));
+      //    var searchAttribute = this.searchAttributeList[i];
+       //   alert('closeSearchDialogSearch: '+data.length);
+      //    var searchKeyword = this.searchAttributeKeywordPairs[searchAttribute];
+      //    console.log("from Filtered Data: filtering: => searchAttribute=>"+searchAttribute+" =>searchKeyword"+searchKeyword);
+      //    data = data.filter(function( obj ) {  return obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
+      //}
+      //var s = {};
+      //alert('closeSearchDialogSearch: '+data.length);
+      //s.result = data;
+      //this.$store.dispatch('updateCountriesFromData', s)
+      //this.searchCount++;
+      alert('From: closeSearchDialogSearch => searchCount => '+this.searchCount);
+      //this.tableDataMutable = [{name:'Pakistan',alpha2_code:'IN', alpha3_code:'IND'}];
+      //console.log("hu ha ******************* =>"+JSON.stringify(this.tableDataMutable));
     },
     onSearchDialogOpen() {
       console.log('Opened');
@@ -203,10 +285,24 @@ export default {
     onSearchDialogClose(type) {
       alert('Closed', type);
     },
-    heiglightSearchMatch(value) {
+    heiglightSearchMatch(value, cIndex) {
         //alert(value.replace(this.searchKeyword, "<span style='color:yellow'>"+this.searchKeyword+"</span>"));
-        var matchedKeyword = value.toUpperCase
-        return value.replace(this.searchKeyword, "<span style='background-color:yellow'>"+this.searchKeyword+"</span>")
+        //var matchedKeyword = value.toUpperCase
+        if(this.searchAttributeList.indexOf(cIndex) < 0 ){
+            console.log('From <<didnt match>>heiglightSearchMatch: value => ' + value + ' cIndex=> ' + cIndex + ' matchedKeyword => '+matchedKeyword +' =>returning =>'+value);
+            return value;
+        }
+        var colorCode = this.colorCodes[this.searchAttributeList.indexOf(cIndex)];
+        var matchedKeyword = this.searchAttributeKeywordPairs[cIndex];
+        console.log('from: closeSearchDialogSearch=> searchAttributeKeywordPairs : '+JSON.stringify(this.searchAttributeKeywordPairs));
+        console.log('From heiglightSearchMatch: value => ' + value + ' cIndex=> ' + cIndex + ' matchedKeyword => '+matchedKeyword +' =>returning =>'+value.replace(this.searchKeyword, "<span style='background-color:yellow'>"+this.searchKeyword+"</span>"));
+        var startIndex = value.toUpperCase().indexOf(matchedKeyword.toUpperCase());
+        matchedKeyword = value.substring(startIndex, startIndex+matchedKeyword.length);
+        return value.replace(matchedKeyword, "<span style='background-color:"+colorCode+"'>"+matchedKeyword+"</span>")
+    },
+    getHighlightedSearchKeyword(cIndex) {
+        var colorCode = this.colorCodes[this.searchAttributeList.indexOf(cIndex)];
+        return "(<span style='color:"+colorCode+"'>"+this.searchAttributeKeywordPairs[cIndex]+"</span>)";
     }
   }
 }
