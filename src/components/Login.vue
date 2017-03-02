@@ -32,8 +32,8 @@
     <md-dialog-alert
   :md-title="passwordForgotDialogData.title"
   :md-content-html="passwordForgotDialogData.contentHtml"
-  @open="onOpenPWFDialogOpen"
-  @close="onClosePWFDialogClose"
+  @open="onOpenPWFDialog"
+  @close="onClosePWFDialog"
   ref="PWFDialog">
 </md-dialog-alert>
   </md-whiteframe>
@@ -84,11 +84,11 @@ export default {
     width: 100px !important; 
 }
 #login-form-card{
-    background-color: #e8e8e8;
+    background-color: #f5f5f5;
 }
 #login-page-whiteframe{
     margin: 0 auto;
-    width: 400px;
+    width: 350px;
 }
 .md-input-container .md-icon:not(.md-icon-delete):after {
     width: 0px !important;
