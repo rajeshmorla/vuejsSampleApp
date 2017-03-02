@@ -2,13 +2,12 @@
 <div class="c-container" id="app">
     <div class="c-nav-bar" id="navbar">
         <div class="c-nav-bar-inner-container">
-            <md-toolbar class="md-large md-warn">
-                <div class="md-toolbar-container" md-theme="orange">
-                <h3 class="md-title">let's see</h3>
-            </div>
+            <md-toolbar class="md-large md-accent" id="nav-bar-logo-container">
+                <h1 style="color:blue; ">Logo goes here..</h1><!--<center><img src="../src/assets/logo-vue-material.png" alt="People" width="200px" height="200px"></center>-->
             </md-toolbar>
-            <md-list>
-                <md-list-item>      
+            <div id="sh-nav-link">
+                <md-list>
+                <md-list-item class="nav-bar-router-link">      
                     <router-link exact to="/home">Home<md-icon md-theme="light-blue">home</md-icon></router-link>
                 </md-list-item>
                 <md-list-item>      
@@ -17,16 +16,17 @@
                 <md-list-item>      
                     <router-link exact to="/table">Table<md-icon md-theme="orange">menu</md-icon></router-link>
                 </md-list-item>
-            </md-list>
+            </md-list><!--
             <router-link to="/haha">Ha Ha</router-link>
             <router-link to="/lala">La La</router-link>
-            <router-link to="/sare">Sa re</router-link>
+            <router-link to="/sare">Sa re</router-link> -->
+            </div>
         </div>
     </div>
     <div class="c-page-content">
         <div class="page-content-inner-table">
             <div class="c-header">
-                <md-toolbar>
+                <md-toolbar id="site-header-main">
                     <md-button class="md-icon-button" @click.native="toggleSidenav" id='toggle-button-sh'>
                         <md-icon>menu</md-icon>
                     </md-button>
@@ -40,6 +40,9 @@
     </div>
 </div>
 </template>
+
+            
+
 
 <style>
             html *{
@@ -113,6 +116,20 @@
                 padding-top: 20px;
                 border-left: #e0e0e0 1px solid;
                 overflow: auto;
+            }
+            #sh-nav-link{
+                overflow: auto;
+            }
+            #nav-bar-logo-container{
+                background-color: #ffffff !important;
+                border-bottom: 1px solid #cccccc !important;
+            }
+            #site-header-main{
+                border-bottom: 6px outset rgb(255, 24, 0) !important;
+                background-color: #1f4b5d !important;
+            }
+            .md-list-item .md-list-item-container{
+                font-weight: bold !important;
             }
 
             /* Mobile navigation */
