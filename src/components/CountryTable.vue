@@ -7,7 +7,9 @@
       <md-icon>filter_list</md-icon>
     </md-button>
     <md-button class="md-icon-button" v-on:click.native="updateCountries1">
-      <md-icon>refresh</md-icon>
+      <md-icon v-if="!isDataUnderChange">refresh</md-icon>      
+    <md-spinner v-if="isDataUnderChange" :md-size="20" md-indeterminate>
+    </md-spinner>
     </md-button>
     <md-chips v-model="searchAttributeList" :md-max="columnList.length" v-if="searchAttributeList.length>0">
         <template scope="chip">
@@ -127,11 +129,13 @@ export default {
     searchAttributeKeywordPairs: {},
     searchCount: 0,
     colorCodes: ['#f00','#0f0','#00f','#0ff','#ff0'],
+    isDataUnderChange1 : true,
   }),
   name: 'CountrySection',
   computed: {
     ...mapGetters({
-      tableData: 'countries'
+      tableData: 'countries',
+      isDataUnderChange: 'dataUpdating'
     }),
     filteredTableData: function(){
         var data = this.tableData;
@@ -190,7 +194,10 @@ export default {
   },
   methods: {
     updateCountries1: function() {
-        alert('le lota')
+        //alert('le lota')
+        var temp = {};
+        temp.status = true;
+        this.$store.dispatch('updateDataChangeStatus', temp)
         this.$store.dispatch('updateCountries', {})
     },
     updateStates: function(ccode) {
