@@ -8,7 +8,8 @@ Vue.use(Vuex)
 
 const state = {
     countries: [{name:'Pakistan',alpha2_code:'IN', alpha3_code:'IND'}],
-    states: {}
+    states: {},
+    dataUpdating: false,
 }
 
 export default new Vuex.Store({
