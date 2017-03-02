@@ -36,3 +36,7 @@ export const clearCountryList = ({ commit }, payload) => {
     temp.result = [];
     commit('UPDATE_COUNTRIES', temp )
 }
+
+export const updateDataChangeStatus = ({ commit }, payload) => {
+    commit('UPDATE_DATA_CHANGE_STATUS', payload )
+}
