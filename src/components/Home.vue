@@ -1,5 +1,5 @@
 <template>
-<md-whiteframe md-elevation="9" id="welcome-page">
+<md-whiteframe md-elevation="9" id="welcome-page" class="data-container">
     <md-card class="">
   <md-card-header>
     <md-card-header-text>

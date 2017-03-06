@@ -1,5 +1,5 @@
 <template>
-<md-whiteframe md-elevation="9" id="login-page-whiteframe">
+<md-whiteframe md-elevation="9" id="login-page-whiteframe" class="data-container">
     <md-card class="" id="login-form-card">
     <br><br>
   <!-- <md-card-header>
@@ -17,14 +17,14 @@
     <form novalidate @submit.stop.prevent="submit">
   <md-input-container>
     <label>user name</label>
-    <md-input v-model="initialValue"></md-input>
+    <md-input v-model="userName"></md-input>
   </md-input-container>
 
   <md-input-container md-has-password>
     <label>Password</label>
-    <md-input type="password"></md-input>
+    <md-input type="password" v-model="passWord"></md-input>
   </md-input-container>
-    <center><md-button class="md-raised md-primary">Login</md-button></center>
+    <center><md-button class="md-raised md-primary" v-on:click.native="handleFormSubmit">Login</md-button></center>
     </form>
     <span><a @click="needHelpClickHandler('PWFDialog')">need help?</a></span>
   </md-card-content>
@@ -36,6 +36,13 @@
   @close="onClosePWFDialog"
   ref="PWFDialog">
 </md-dialog-alert>
+    <md-dialog-alert
+  :md-title="invalidFormSubmitDialogData.title"
+  :md-content-html="invalidFormSubmitDialogData.contentHtml"
+  @open="onOpenInvalidDataSubmitDialog"
+  @close="onCloseInvalidDataSubmitDialog"
+  ref="invalidDataSubmitDialog">
+</md-dialog-alert>
   </md-whiteframe>
 </template>
 
@@ -45,13 +52,28 @@ import { updateCountries } from '../store/actions'
 import { mapGetters } from 'vuex'
 
 export default {
-    data: ()=> ({initialValue : 5,
+    data: ()=> ({userName : '',
+        passWord: '',
         passwordForgotDialogData: {
             title: 'Forgot username or Password!',
-            contentHtml: 'Beep ke<strong> Password </strong>mat bhoola karo'
+            contentHtml: 'Beep ke<strong>, Password </strong>mat bhoola karo'
+        },
+        invalidFormSubmitDialogData: {
+            title: 'Ah ah!!',
+            contentHtml: '<strong>Invalid </strong>Data, Please<strong>, check </strong>your entry'
         }
     }), 
     methods: {
+    handleFormSubmit: function(){
+        //alert(JSON.stringify(this.$route))
+        if(this.userName.length < 3 || this.passWord.length < 3){
+            //alert('Invalid data! try again');
+            this.openInvalidDataSubmitDialog('invalidDataSubmitDialog');
+        }
+        else{
+            location.href = '/#/user/'+this.userName;
+        }
+    },
     needHelpClickHandler: function(ref) {
         //alert('le lota')
         //this.$store.dispatch('updateCountries', {})
@@ -67,6 +89,18 @@ export default {
       console.log('Opened');
     },
     onClosePWFDialog(type) {
+      console.log('Closed', type);
+    },
+    openInvalidDataSubmitDialog(ref) {
+      this.$refs[ref].open();
+    },
+    closeInvalidDataSubmitDialog(ref) {
+      this.$refs[ref].close();
+    },
+    onOpenInvalidDataSubmitDialog() {
+      console.log('Opened');
+    },
+    onCloseInvalidDataSubmitDialog(type) {
       console.log('Closed', type);
     }
    } 

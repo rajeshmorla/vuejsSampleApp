@@ -1,94 +1,40 @@
 <template>
-<div id="movie-list">
-    <md-table-card>
-  <md-toolbar>
-    <h1 class="md-title">Bollywood</h1>
-    <md-button class="md-icon-button" v-on:click.native="updateCountries1">
-      <md-icon>filter_list</md-icon>
-    </md-button>
-    <md-button class="md-icon-button" v-on:click.native="updateCountries1">
-      <md-icon v-if="!isDataUnderChange">refresh</md-icon>      
-    <md-spinner v-if="isDataUnderChange" :md-size="20" md-indeterminate>
-    </md-spinner>
-    </md-button>
-    <md-chips v-model="searchAttributeList" :md-max="columnList.length" v-if="searchAttributeList.length>0">
-        <template scope="chip">
-            <span>{{ chip.value }}</span>
-            <small v-html="getHighlightedSearchKeyword(chip.value)"></small>
-        </template>
-    </md-chips>
-    <md-button class="md-icon-button" id="searchTableButton" @click.native="openSearchDialog('searchDialog')">
-      <md-icon>search</md-icon>
-    </md-button>
-  </md-toolbar>
+<md-whiteframe md-elevation="9" id="login-page-whiteframe" class="data-container">
+    <md-card class="" id="login-form-card">
+    <br><br>
+  <md-card-header>
+    <md-card-header-text>
+      <div class="md-title">{{$route.params.id}}</div>
+      <div class="md-subhead">Dhondhu, just chill!</div>
+    </md-card-header-text>
+  </md-card-header>
 
-  <md-table md-sort="name" md-sort-type="desc" @select="onSelect" @sort="onSort">
-    <md-table-header>
-      <md-table-row md-auto-select md-selection>
-        <md-table-head v-for="(row, rowIndex) in columnList" :md-sort-by="row" :md-tooltip="'Sort By: '+row">
-            {{row}}
-        </md-table-head>
-      </md-table-row>
-    </md-table-header>
-
-    <md-table-body>
-      <md-table-row v-for="(row, rowIndex) in tableDataCurrentPage" :key="rowIndex" :md-item="row" md-auto-select md-selection>
-        <md-table-cell v-for="(column, columnIndex) in row" v-html="heiglightSearchMatch(column,columnIndex)" :key="columnIndex" :md-numeric="false">
-          ag
-        </md-table-cell>
-      </md-table-row>
-    </md-table-body>
-  </md-table>
-
-  <md-table-pagination
-    :md-size="pageSize"
-    md-total="200"
-    md-page="1"
-    md-label="Rows"
-    md-separator="of"
-    :md-page-options="[5, 10, 25, 50]"
-    @pagination="onPagination"></md-table-pagination>
-</md-table-card>
-
-
-<md-dialog md-open-from="#searchTableButton" md-close-to="#searchTableButton" ref="searchDialog">
-  <md-dialog-title>Search Table</md-dialog-title>
-
-  <md-dialog-content>
-    <form>
-      <md-input-container>
-    <label for="movie">Attribute to Search</label>
-    <md-select name="SearchAttributeSelect" id="SearchAttributeSelect">
-      <md-option v-for="(row, rowIndex) in columnList" :value="row">{{row}}</md-option>
-    </md-select>
-  </md-input-container>
-      <md-input-container>
-        <label>keyword..</label>
-        <md-textarea id='SearchKeywordArea'></md-textarea>
-      </md-input-container>
-    </form>
-  </md-dialog-content>
-
-  <md-dialog-actions>
-    <md-button class="md-primary" @click.native="closeSearchDialogCancel('searchDialog')">Cancel</md-button>
-    <md-button class="md-primary" @click.native="closeSearchDialogSearch('searchDialog')">Search</md-button>
-  </md-dialog-actions>
-</md-dialog>
-  </div>
+  <md-card-media>
+    <center><img src="../assets/card-image-horse.jpg" alt="People"></center>
+  </md-card-media>
+    
+  <md-card-content>
+    <center>
+    Mera dil bhi kitna pagal hai<br>
+    Ye pyar jo tumse karta hai<br>
+    par samne jab tum aati ho<br>
+    Kuchh bhi kehen se darta hai
+    </center>
+  </md-card-content>
+</md-card>
+  </md-whiteframe>
 </template>
 
 
 <script>
-import { updateCountries } from '../store/actions'
+// import { updateCountries, updateDataChangeStatus } from '../store/actions'
 import { mapGetters } from 'vuex'
-import Vue from 'vue'
-import VueResource from 'vue-resource'
-
-Vue.use(VueResource)
+import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
     data: () => ({
-    tableData: [],
+    tableTitle: 'Users',
     currentPage : 1,
     pageSize: 15,
     searchAttribute: '',
@@ -102,8 +48,8 @@ export default {
   name: 'CountrySection',
   computed: {
     ...mapGetters({
-      tableData1: 'countries',
-      isDataUnderChange: 'dataUpdating'
+      tableData: 'users/users',
+      isDataUnderChange: 'users/dataUpdating'
     }),
     filteredTableData: function(){
         var data = this.tableData;
@@ -114,11 +60,14 @@ export default {
              console.log('filteredTableData: '+ data.length)
              var searchKeyword = this.searchAttributeKeywordPairs[searchAttribute];
              console.log("from Filtered Data: filtering: => searchAttribute=>"+searchAttribute+" =>searchKeyword"+searchKeyword);
-             data = data.filter(function( obj ) {  return obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
+             data = data.filter(function( obj ) {  return (typeof obj[searchAttribute] != 'undefined') && obj[searchAttribute].toUpperCase().indexOf(searchKeyword.toUpperCase()) >= 0 ; });
         }
          console.log("from Filtered Data: data=> "+JSON.stringify(this.tableData))
          console.log('From: filteredTableData => no of countries: => '+data.length);
         return data;
+    },
+    tableDataMutable: function(){
+        return this.tableData;
     },
     tableDataCurrentPage: function(){
         //return this.tableDataMutable;
@@ -158,17 +107,20 @@ export default {
     },
   },
   methods: {
-    updateMovies: function() {
+    ...mapActions('countries', {
+        updateDataChangeStatus: 'updateDataChangeStatus',
+        updateCountries: 'updateCountries' 
+    }),
+    updateTableData: function() {
         //alert('le lota')
-        Vue.http.get('http://services.groupkt.com/country/get/all').then((response) => {        
-        var str = response.body
-        var objc = str
-        objc = objc.RestResponse
-        // console.log("response------"+JSON.stringify(objc))
-        commit('UPDATE_COUNTRIES', objc )
-        this.tableData = [];
-        })
-        
+        var temp = {};
+        temp.status = true;
+        this.$store.dispatch('users/updateDataChangeStatus', temp)
+        this.$store.dispatch('users/updateUsers', '1488772692543')
+    },
+    updateStates: function(ccode) {
+        alert('le lota c:'+ccode)
+        this.$store.dispatch('updateStates', ccode)
     },
     clearTable: function(){
         this.$store.dispatch('clearCountryList', {})
@@ -188,14 +140,14 @@ export default {
         // this.tableData = _.orderBy(this.tableData, [item => item[e.name]], e.type);
         // }
         if (sortKey) {
-        s.result = this.tableData.slice().sort(function (a, b) {
+        s.data = this.tableData.slice().sort(function (a, b) {
           a = a[sortKey]
           b = b[sortKey]
           return (a === b ? 0 : a > b ? 1 : -1) * sortType
         })
         }
         console.log('sorted:++++++++++++'+JSON.stringify(s));
-        this.$store.dispatch('updateCountriesFromData', s)
+        this.$store.dispatch('users/updateUsersFromData', s)
     // this.$store.dispatch('clearCountryList', {})
     },
     onPagination: function(e){
@@ -261,6 +213,7 @@ export default {
     heiglightSearchMatch(value, cIndex) {
         //alert(value.replace(this.searchKeyword, "<span style='color:yellow'>"+this.searchKeyword+"</span>"));
         //var matchedKeyword = value.toUpperCase
+        console.log('++++++++++++++++++++++++++++'+value+' '+ cIndex+' +++++++++++++++');
         if(this.searchAttributeList.indexOf(cIndex) < 0 ){
             console.log('From <<didnt match>>heiglightSearchMatch: value => ' + value + ' cIndex=> ' + cIndex + ' matchedKeyword => '+matchedKeyword +' =>returning =>'+value);
             return value;
@@ -284,6 +237,27 @@ export default {
 
 
 <style scoped>
+.md-theme-default a:not(.md-button):hover {
+    color: #2f8aff !important;
+    cursor: pointer !important;
+}
+.md-card .md-card-media img {
+    width: 300px !important; 
+}
+#login-form-card{
+    background-color: #f5f5f5;
+}
+#login-page-whiteframe{
+    margin: 0 auto;
+    width: 350px;
+}
+.md-input-container .md-icon:not(.md-icon-delete):after {
+    width: 0px !important;
+    height: 0px !important;
+}
+.md-theme-default.md-input-container .md-icon:not(.md-icon-delete):after {
+    background: rgba(109, 104, 104, 0) !important;
+}
 h1, h2 {
   font-weight: normal;
 }
