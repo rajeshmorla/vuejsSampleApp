@@ -192,14 +192,14 @@ export default {
         // this.tableData = _.orderBy(this.tableData, [item => item[e.name]], e.type);
         // }
         if (sortKey) {
-        s.result = this.tableData.slice().sort(function (a, b) {
+        s.data = this.tableData.slice().sort(function (a, b) {
           a = a[sortKey]
           b = b[sortKey]
           return (a === b ? 0 : a > b ? 1 : -1) * sortType
         })
         }
         console.log('sorted:++++++++++++'+JSON.stringify(s));
-        this.$store.dispatch('updateCountriesFromData', s)
+        this.$store.dispatch('users/updateUsersFromData', s)
     // this.$store.dispatch('clearCountryList', {})
     },
     onPagination: function(e){
