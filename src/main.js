@@ -9,6 +9,7 @@ import store from 'store/index'
 import VueRouter from 'vue-router'
 import PageContent from './components/PageContent';
 import CountryTable from './components/CountryTable';
+import UserTable from './components/Users';
 import Home from './components/Home';
 import Login from './components/Login';
 import Test from './components/Test';
@@ -33,6 +34,7 @@ const routes = [
   { path: '/home', component: Home },
   { path: '/table', component:  CountryTable},
   { path: '/login', component:  Login},
+  { path: '/users', component:  UserTable},
   { path: '/lala', component:  Test}
 ]
 
@@ -40,6 +42,21 @@ const router = new VueRouter({
   routes
 })
 
+//router.beforeEach((to, from, next) => {
+//  //alert(JSON.stringify(to));
+//  Vue.nextTick(() => {
+//    let dataContainer = document.querySelector('#country-list');
+//
+//    if (dataContainer) {
+//      dataContainer.style.top = '-100px';
+//    }
+//
+//    //Docs.closeSidenav();
+//
+//    next();
+//  });
+//  //next();
+//})
 Vue.component('page-content', PageContent);
 // Vue.material.setCurrentTheme(theme);
 var Docs = Vue.component('app', App)
