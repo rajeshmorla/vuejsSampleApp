@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import * as getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
+import usersStore from './users/index'
 
 Vue.use(Vuex)
 
@@ -12,9 +13,19 @@ const state = {
     dataUpdating: false,
 }
 
-export default new Vuex.Store({
+const countriesStore = {
+  namespaced: true,
   state,
   getters,
   actions,
   mutations
+}
+
+const store1 = new Vuex.Store({
+    modules: {
+        countries: countriesStore,
+        users: usersStore
+    }
 })
+
+export default store1
