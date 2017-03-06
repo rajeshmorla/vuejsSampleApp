@@ -1,5 +1,5 @@
 <template>
-<div id="country-list">
+<div id="country-list" class="data-container">
     <md-table-card>
   <md-toolbar>
     <h1 class="md-title">Countries</h1>
@@ -79,8 +79,10 @@
 
 
 <script>
-import { updateCountries } from '../store/actions'
+// import { updateCountries, updateDataChangeStatus } from '../store/actions'
 import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
     data: () => ({
@@ -134,8 +136,8 @@ export default {
   name: 'CountrySection',
   computed: {
     ...mapGetters({
-      tableData: 'countries',
-      isDataUnderChange: 'dataUpdating'
+      tableData: 'countries/countries',
+      isDataUnderChange: 'countries/dataUpdating'
     }),
     filteredTableData: function(){
         var data = this.tableData;
@@ -193,12 +195,16 @@ export default {
     },
   },
   methods: {
+    ...mapActions('countries', {
+        updateDataChangeStatus: 'updateDataChangeStatus',
+        updateCountries: 'updateCountries' 
+    }),
     updateCountries1: function() {
         //alert('le lota')
         var temp = {};
         temp.status = true;
-        this.$store.dispatch('updateDataChangeStatus', temp)
-        this.$store.dispatch('updateCountries', {})
+        this.$store.dispatch('countries/updateDataChangeStatus', temp)
+        this.$store.dispatch('countries/updateCountries', {})
     },
     updateStates: function(ccode) {
         alert('le lota c:'+ccode)
