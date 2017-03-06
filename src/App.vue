@@ -2,8 +2,8 @@
 <div class="c-container" id="app">
     <div class="c-nav-bar" id="navbar">
         <div class="c-nav-bar-inner-container">
-            <md-toolbar class="md-large md-accent" id="nav-bar-logo-container">
-                <h1 style="color:blue; ">Logo goes here..</h1><!--<center><img src="../src/assets/logo-vue-material.png" alt="People" width="200px" height="200px"></center>-->
+            <md-toolbar class="md-large md-primary" id="nav-bar-logo-container">
+                <h1 style="color:blue; "></h1><center><img src="../src/assets/wave-logo.png" alt="People" width="200px" height="200px"></center>
             </md-toolbar>
             <div id="sh-nav-link">
                 <md-list>
@@ -12,9 +12,19 @@
                 </md-list-item>
                 <md-list-item>      
                     <router-link exact to="/login">Login<md-icon md-theme="green">people</md-icon></router-link>
-                </md-list-item>
-                <md-list-item>      
-                    <router-link exact to="/table">Table<md-icon md-theme="orange">menu</md-icon></router-link>
+                </md-list-item>                
+                <md-list-item>
+                    <span>Tables</span>
+                    <md-list-expand>
+                        <md-list>
+                            <md-list-item>      
+                                <router-link exact to="/table">Table<md-icon md-theme="orange">menu</md-icon></router-link>
+                            </md-list-item>
+                            <md-list-item>      
+                                <router-link exact to="/users">Users<md-icon md-theme="orange">menu</md-icon></router-link>
+                            </md-list-item>
+                        </md-list>
+                    </md-list-expand>
                 </md-list-item>
             </md-list><!--
             <router-link to="/haha">Ha Ha</router-link>
@@ -34,7 +44,9 @@
                 </md-toolbar>
             </div>
             <div class="c-router-data">
+                <transition name="slideRouter" appear>
                 <router-view></router-view>
+                </transition>
             </div>
         </div>
     </div>
@@ -44,7 +56,7 @@
             
 
 
-<style>
+<style >
             html *{
                 /*! box-sizing: inherit; */
             }
@@ -52,6 +64,7 @@
                 margin: 0px 0px 0px 0px;
                 /*! min-height: 100%; */
                 background-color: antiquewhite;
+                background-image: url(../src/assets/mzbg.png);
             }
             .c-container {
                 height: 100%;
@@ -100,6 +113,7 @@
                 height: 100%;
                 display: block;
                 overflow: auto;
+                background-image: url(../src/assets/mzbg.png);
             }
 
             .c-router-data{
@@ -115,18 +129,20 @@
                 padding-right: 20px;
                 padding-top: 20px;
                 border-left: #e0e0e0 1px solid;
-                overflow: auto;
+                overflow: auto;                
+                background-image: url(../src/assets/mzbg.png);
             }
             #sh-nav-link{
                 overflow: auto;
             }
             #nav-bar-logo-container{
-                background-color: #ffffff !important;
+                background-color: #8ed7f5 !important;
                 border-bottom: 1px solid #cccccc !important;
             }
             #site-header-main{
                 border-bottom: 6px outset rgb(255, 24, 0) !important;
-                background-color: #1f4b5d !important;
+                background-color: #1f4b5d !important;                
+                background-image: url(../src/assets/mzbg.png);
             }
             .md-list-item .md-list-item-container{
                 font-weight: bold !important;
@@ -214,6 +230,33 @@
             #nav-toggle.active span:after {
                 transform: rotate(-45deg);
             }
+            .slideRouter-enter-active{
+                transition: all .5s
+            }
+            .slideRouter-enter {
+                transform: translate3d(0, 100%, 0);
+            }
+            #country-list, #login-page-whiteframe, #welcome-page{
+                /*position: relative;*/
+            }
+            .data-container{
+                /*position: relative;
+                top : 0px;*/
+                /*transition: top .5s linear;*/
+            }
+            
+
+            /* start=> v-r-transition, default is {forward: 'forward', back: 'back'}*/
+            .view {
+                transition: all .5s ease;
+            }
+            .forward-enter, .forward-leave {
+                transform: translate3d(-100%, 0, 0);
+            }
+            .back-enter, .back-leave {
+                transform: translate3d(100%, 0, 0);
+            }
+            /*end=> v-r-transition, default is {forward: 'forward', back: 'back'}*/
 </style>
 
 <script>
@@ -224,7 +267,8 @@
       return {
         toolbar: true,
         theme: 'default',
-        pageTitle: ''
+        pageTitle: '',
+        transitionName: 'slide-left'
       };
     },
     computed: {
