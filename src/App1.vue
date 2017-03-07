@@ -2,15 +2,19 @@
 <div class="c-container" id="app">
             <div class="c-header">
                <md-toolbar id="site-header-main">
-                    <md-button class="md-icon-button" @click.native="toggleSidenav" id='toggle-button-sh'>
+                    <md-button class="md-icon-button" @click.native="toggleSidenav" id='toggle-button-sh' v-if="!isLoginPage">
                         <md-icon>menu</md-icon>
                     </md-button>
-                    <center><img src="../src/assets/wave-logo.png" alt="People" width="150px" height="150px"></center>
+                    <center>
+                        <img src="../static/wave-logo.png" alt="People" width="150px" height="150px"
+                                v-on:mouseover="handleHeaderLogoMouseHover"
+                                onmouseout="this.src='../static/wave-logo.png'" id='header-logo'>
+                    </center>
                     <h2 class="md-title" style="flex: 1"></h2>
                 </md-toolbar>
             </div>
             <div class="content-holder">
-                <div class="c-nav-bar" id="navbar">
+                <div class="c-nav-bar" id="navbar" v-if="!isLoginPage">
                     <div class="c-nav-bar-inner-container">
                     <br>
             <div id="sh-nav-link">
@@ -84,6 +88,7 @@
                 left: 0px;
                 overflow: auto;
                 display: flex;
+                /*background-image: url(../src/assets/c-h-bg-12.png) !important;*/
             }
 
             .c-page-content{
@@ -93,7 +98,6 @@
                 display: table-cell;
                 border-left: solid 2px #b7b9b7;
                 padding-left: 20px;
-                padding-right: 20px;
                 padding-top: 20px;
                 /* position: absolute; */
                 /* background-color: #d0d01a; */
@@ -114,6 +118,7 @@
                 /* bottom: 0px; */
                 height: 100%;
                 width: 100%;
+                padding-right: 20px;
                 overflow: auto;
             }
 
@@ -139,12 +144,19 @@
                 border-bottom: 1px solid #cccccc !important;
             }
             #site-header-main{
-                border-bottom: 2px outset rgb(255, 24, 0) !important;
-                background-color: #1f4b5d !important;                
-                background-image: url(../src/assets/mzbg.png);
+                border-bottom: 2px inset rgb(199, 199, 199) !important;
+                background-color: #5fb9e2 !important;                
+                /*background-image: url(../src/assets/mzbg.png);*/
             }
             .md-list-item .md-list-item-container{
                 font-weight: bold !important;
+                border-bottom: #f7e3aa 1px solid !important;
+            }
+            .md-theme-default.md-list {
+                background-color: transparent !important;
+            }
+            #header-logo{
+                cursor: pointer;
             }
 
             /* Mobile navigation */
@@ -270,7 +282,8 @@
         toolbar: true,
         theme: 'default',
         pageTitle: '',
-        transitionName: 'slide-left'
+        transitionName: 'slide-left',
+        logoHoverCount: 0
       };
     },
     computed: {
@@ -282,6 +295,9 @@
         }
 
         return 'assets/logo-vue-material-default.png';
+      },
+      isLoginPage() {
+        return (this.$route.path == '/login' || this.$route.path == '/') ? true : false;
       }
     },
     methods: {
@@ -295,6 +311,12 @@ if (document.getElementById('navbar').style.display == 'inline-table') {
       },
       closeSidenav() {
         this.$refs['main-sidebar'].close();
+      },
+      handleHeaderLogoMouseHover: function(){
+        //alert(event.target.tagname)
+        this.logoHoverCount++;
+        var temp = this.logoHoverCount%6;
+        document.getElementById('header-logo').setAttribute('src', '../static/wave-logo-hover-'+temp+'.png');
       }
     }
   };

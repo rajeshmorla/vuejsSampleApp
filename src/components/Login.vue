@@ -110,6 +110,9 @@ export default {
 
 
 <style scoped>
+.content-holder{
+    background-image: url(../assets/c-h-bg-15.png) !important;
+}
 .md-theme-default a:not(.md-button):hover {
     color: #2f8aff !important;
     cursor: pointer !important;

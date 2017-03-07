@@ -33,6 +33,7 @@ const HaHa = { template: '<div><h1>Ha Ha Ha Ha..<h1></div>' }
 const LaLa = { template: '<div><h1>La La La La..</h1></div>' }
 
 const routes = [
+  { path: '/', component: Login },
   { path: '/home', component: Home },
   { path: '/table', component:  CountryTable},
   { path: '/login', component:  Login},
