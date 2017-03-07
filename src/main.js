@@ -14,7 +14,6 @@ import UserTable from './components/Users';
 import Home from './components/Home';
 import Login from './components/Login';
 import PropTest from './components/PropTest';
-import Test from './components/Test';
 
 Vue.use(VueMaterial)
 Vue.use(VueRouter)
@@ -29,8 +28,6 @@ Vue.use(VueRouter)
   components: { App }
 }) */
 
-const HaHa = { template: '<div><h1>Ha Ha Ha Ha..<h1></div>' }
-const LaLa = { template: '<div><h1>La La La La..</h1></div>' }
 
 const routes = [
   { path: '/', component: Login },
@@ -38,8 +35,7 @@ const routes = [
   { path: '/table', component:  CountryTable},
   { path: '/login', component:  Login},
   { path: '/users', component:  UserTable},
-  { path: '/user/:id', component: PropTest },
-  { path: '/lala', component:  Test}
+  { path: '/user/:id', component: PropTest }
 ]
 
 const router = new VueRouter({
@@ -63,7 +59,7 @@ const router = new VueRouter({
 //})
 Vue.component('page-content', PageContent);
 // Vue.material.setCurrentTheme(theme);
-var Docs = Vue.component('app', App1)
+var Docs = Vue.component('app', App)
 /* render: h => h(App) */
 var Docs = new Docs({
   el: '#app',
