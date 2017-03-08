@@ -4,6 +4,8 @@ src/*.vue
 src/router/index.js
 src/components/*.vue
 src/store/*.js
+src/store/users/*.js
+src/store/sessionStore/*.js
 src/vuex/country/*.js
 src/vuex/states/*.js
 src/main.js
