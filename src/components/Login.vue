@@ -50,6 +50,8 @@
 <script>
 import { updateCountries } from '../store/actions'
 import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
     data: ()=> ({userName : '',
@@ -62,7 +64,15 @@ export default {
             title: 'Ah ah!!',
             contentHtml: '<strong>Invalid </strong>Data, Please<strong>, check </strong>your entry'
         }
-    }), 
+    }),
+    computed: {
+    ...mapGetters({
+      username: 'sessionInfo/username',
+      password: 'sessionInfo/password',
+      securityToken: 'sessionInfo/securityToken',
+      isDataUnderChange: 'countries/dataUpdating'
+    }),
+    },
     methods: {
     handleFormSubmit: function(){
         //alert(JSON.stringify(this.$route))
@@ -71,7 +81,15 @@ export default {
             this.openInvalidDataSubmitDialog('invalidDataSubmitDialog');
         }
         else{
-            location.href = '/#/user/'+this.userName;
+            this.$http.post('https://api.waves.io/users/login', {userName: "WavesAdministrator", password: "Test@123"}).then(response => {
+                    alert('response.status: '+response.status);
+                    alert('response.statusText: '+response.statusText);
+                    alert("response.headers.get('Expires'): "+response.headers.get('Expires'));
+                    alert('response.body: '+JSON.stringify(response.body));
+                }, response => {
+                    console.log('From: handleFormSubmit => Some Error Occured');
+            });
+            // location.href = '/#/user/'+this.userName;
         }
     },
     needHelpClickHandler: function(ref) {

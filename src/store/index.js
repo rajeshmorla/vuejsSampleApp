@@ -4,6 +4,7 @@ import * as getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
 import usersStore from './users/index'
+import sessionStore from './sessionStore/index'
 
 Vue.use(Vuex)
 
@@ -24,7 +25,8 @@ const countriesStore = {
 const store1 = new Vuex.Store({
     modules: {
         countries: countriesStore,
-        users: usersStore
+        users: usersStore,
+        sessionInfo: sessionStore
     }
 })
 

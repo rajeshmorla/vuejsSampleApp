@@ -14,9 +14,11 @@ import UserTable from './components/Users';
 import Home from './components/Home';
 import Login from './components/Login';
 import PropTest from './components/PropTest';
+import VueResource from 'vue-resource'
 
 Vue.use(VueMaterial)
 Vue.use(VueRouter)
+Vue.use(VueResource)
 // Vue.use(Store)
 // router.start(App, '#app1')
 /* eslint-disable no-new */
